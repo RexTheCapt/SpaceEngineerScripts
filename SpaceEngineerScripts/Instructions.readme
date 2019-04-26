@@ -1,8 +1,14 @@
-﻿R e a d m e
------------
+﻿-----------------------------------------------------------
+       DO NOT CLICK RUN! READ THIS FIRST - USAGE           
+-----------------------------------------------------------
+Step 1 - Copy the name of the programable block and insert
+it into the "argument" section. (CHASE SENSETIVE)
+Step 2 - Run the script.
+Step 3 (Optional) - Get banned from the server.
 
-In this file you can include any instructions or other comments you want to have injected onto the 
-top of your final script. You can safely delete this file if you do not want any such comments.
+-----------------------------------------------------------
+                       END OF USAGE                        
+-----------------------------------------------------------
 
 -----------------------------------------------------------
                         CREDITS                            
@@ -10,15 +16,14 @@ top of your final script. You can safely delete this file if you do not want any
 Script written by: RexTheCapt
 (Any commets you want to add Rex?)
 Links:
-<Link1>
-<Link2>
+GitHub: https://github.com/RexTheCapt
+Twitter: https://twitter.com/RexTheCapt (@RexTheCapt)
 
-Original idea by ShiftTGC
-Nope. No links from me. I only want to be credited for
-taking a small part in this and for starting the idea for
-making this script. Rex has done most/all the work on "this"
-script. Not me... I did write this and the "REASON OF
-CREATION" though. That's about it though.
+Original suggestion by ShiftTGC
+It is me that should get the hate. I told him about the
+idea, fully knowing there would be a chance at him actually
+doing it. So here, my twitter: https://twitter.com/ShiftTGC
+
 
 -----------------------------------------------------------
                      END OF CREDITS                        
@@ -27,33 +32,32 @@ CREATION" though. That's about it though.
 -----------------------------------------------------------
                     REASON OF CREATION                     
 -----------------------------------------------------------
-//(You can scroll down till "END OF REASON OF CREATION" if
-//not interested in why it was created. Have fun and tell
-//all your friends about this script please!)
 
-//The reason this script has been made, is for two reasons.
-//One, to be a dick, sort of. Two, to show an exploit that
-//should maybe be fixed.
+The reason this script has been made, is for two reasons.
+One, to be a dick, sort of. Two, to show an exploit that
+should maybe be fixed.
 
-//So, what is this script? This script is a Space Engneers
-//script that has the intention of cripeling ships & bases.
-//For now, we know of a way to cripple one base/ship manualy.
-//One idea is to extend that out to first detect friendly
-//signals, connect to them and cripple them as well.
-//And with friendly, do we mean "block owner"
+So, what is this script? This script is a Space Engneers
+script that has the intention of cripeling ships & bases.
+For now, we know of a way to cripple one base/ship manualy.
+One idea is to extend that out to first detect friendly
+signals, connect to them and cripple them as well.
+And with friendly, do we mean "block owner"
 
-//Now, why is this script bad? Because the exploit is to
-//give another player, faction owner, etc. the programable
-//block with the code runing on repeat.
+Now, why is this script bad? Because the exploit is to
+give another player, faction owner, etc. the programable
+block with the code runing on repeat.
 
-//Disables their programable blocks, powers
-//most blocks that can be "opened", disable turrets,
-//opens doors and hangards, close them, detonates wareheads,
-//stop batteries from giving power, stop large generators,
-//stop small generators, stop solar energy from being
-//harvested,
+Disables their programable blocks, powers
+most blocks that can be "opened", disable turrets,
+opens doors and hangards, close them, detonates wareheads,
+stop batteries from giving power, stop large generators,
+stop small generators, stop solar energy from being
+harvested and... Yeah, you probably get it.
 
-//-----------------------------------------------------------
-//                END OF REASON OF CREATION                 
-//-----------------------------------------------------------
+
+
+-----------------------------------------------------------
+                END OF REASON OF CREATION                 
+-----------------------------------------------------------
 

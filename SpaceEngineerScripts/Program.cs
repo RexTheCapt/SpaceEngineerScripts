@@ -26,17 +26,6 @@ namespace IngameScript
 
         public Program()
         {
-            // The constructor, called only once every session and
-            // always before any other method is called. Use it to
-            // initialize your script. 
-            //     
-            // The constructor is optional and can be removed if not
-            // needed.
-            // 
-            // It's recommended to set RuntimeInfo.UpdateFrequency 
-            // here, which will allow your script to run itself without a 
-            // timer block.
-
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
         }
 
@@ -46,8 +35,6 @@ namespace IngameScript
         }
 
         private string _arg = "";
-
-        private int _cnt;
 
         public void Main(string argument, UpdateType updateSource)
         {
@@ -61,43 +48,131 @@ namespace IngameScript
                 _arg = Storage;
             }
 
-            // The main entry point of the script, invoked every time
-            // one of the programmable block's Run actions are invoked,
-            // or the script updates itself. The updateSource argument
-            // describes where the update came from. Be aware that the
-            // updateSource is a  bitfield  and might contain more than 
-            // one update type.
-            // 
-            // The method itself is required, but the arguments above
-            // can be removed if not needed.
+            if (string.IsNullOrEmpty(_arg))
+            {
+                Echo("Argument needed! Please copy the block name and paste it into the argument slot. CASE SENSITIVE");
+                return;
+            }
 
             string o = "";
 
-            List<IMyAirtightHangarDoor> airtightHangarDoors = new List<IMyAirtightHangarDoor>();
+            List<IMyTerminalBlock> doors = GetAllDoors();
             List<IMyProgrammableBlock> programmableBlocks = new List<IMyProgrammableBlock>();
+            List<IMyLargeGatlingTurret> largeGatlingTurrets = new List<IMyLargeGatlingTurret>();
+            List<IMyLargeMissileTurret> missileTurrets = new List<IMyLargeMissileTurret>();
+            List<IMyLargeInteriorTurret> interiorTurrets = new List<IMyLargeInteriorTurret>();
+            List<IMyPistonBase> pistonBases = new List<IMyPistonBase>();
+            List<IMyShipMergeBlock> mergeBlocks = new List<IMyShipMergeBlock>();
+            //List<IMyJumpDrive> jumpDrive = new List<>
+            List<IMyAirVent> airVents = new List<IMyAirVent>();
+            List<IMyGasTank> gasTanks = new List<IMyGasTank>();
 
-            GridTerminalSystem.GetBlocksOfType(airtightHangarDoors);
+            GridTerminalSystem.GetBlocksOfType(largeGatlingTurrets);
+            GridTerminalSystem.GetBlocksOfType(missileTurrets);
+            GridTerminalSystem.GetBlocksOfType(interiorTurrets);
+            GridTerminalSystem.GetBlocksOfType(doors);
             GridTerminalSystem.GetBlocksOfType(programmableBlocks);
+            GridTerminalSystem.GetBlocksOfType(pistonBases);
+            GridTerminalSystem.GetBlocksOfType(mergeBlocks);
+            GridTerminalSystem.GetBlocksOfType(airVents);
+            GridTerminalSystem.GetBlocksOfType(gasTanks);
 
             foreach (IMyProgrammableBlock block in programmableBlocks)
             {
                 if (block.CustomName != _arg)
+                {
                     block.ApplyAction("OnOff_Off");
+                }
             }
 
-            foreach (IMyAirtightHangarDoor b in airtightHangarDoors)
+            foreach (IMyTerminalBlock door in doors)
             {
-                b.OpenDoor();
+                if (door is IMyAirtightHangarDoor)
+                {
+                    IMyAirtightHangarDoor b = door as IMyAirtightHangarDoor;
+
+                    b.OpenDoor();
+
+                    if (b.Status == DoorStatus.Open)
+                    {
+                        b.ApplyAction("OnOff_Off");
+                    }
+                    else
+                    {
+                        b.ApplyAction("OnOff_On");
+                    }
+                }
+
+                if (door is IMyDoor)
+                {
+                    IMyDoor b = door as IMyDoor;
+
+                    b.OpenDoor();
+
+                    if (b.Status == DoorStatus.Open)
+                    {
+                        b.ApplyAction("OnOff_Off");
+                    }
+                    else
+                    {
+                        b.ApplyAction("OnOff_On");
+                    }
+                }
             }
 
-            if ((DateTime.Now - _initiationDateTime).TotalSeconds > 15)
+            foreach (IMyLargeGatlingTurret turret in largeGatlingTurrets)
             {
-
+                turret.ApplyAction("OnOff_Off");
             }
 
-            _cnt++;
+            foreach (IMyLargeMissileTurret turret in missileTurrets)
+            {
+                turret.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyLargeInteriorTurret turret in interiorTurrets)
+            {
+                turret.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyPistonBase myPistonBase in pistonBases)
+            {
+                Single velocity = -5;
+
+                myPistonBase.SetValue("Velocity", velocity);
+                myPistonBase.MinLimit = 0;
+            }
+
+            foreach (IMyAirVent vent in airVents)
+            {
+                vent.Depressurize = true;
+
+                //int oxygenTanks = 
+            }
+
+            // APPLY AT LAST //
+            foreach (IMyShipMergeBlock block in mergeBlocks)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
 
             Echo(o);
+        }
+
+        private List<IMyTerminalBlock> GetAllDoors()
+        {
+            List<IMyAirtightHangarDoor> hangarDoors = new List<IMyAirtightHangarDoor>();
+
+            GridTerminalSystem.GetBlocksOfType(hangarDoors);
+
+            List<IMyTerminalBlock> blocks = new List<IMyTerminalBlock>();
+
+            foreach (IMyAirtightHangarDoor door in hangarDoors)
+            {
+                blocks.Add(door);
+            }
+
+            return blocks;
         }
     }
 }
