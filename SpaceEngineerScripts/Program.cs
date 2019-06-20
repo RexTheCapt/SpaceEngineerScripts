@@ -8,6 +8,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System;
+using SpaceEngineers.Game.Entities.Blocks;
 using VRage.Collections;
 using VRage.Game.Components;
 using VRage.Game.GUI.TextPanel;
@@ -22,7 +23,7 @@ namespace IngameScript
 {
     sealed class Program : MyGridProgram
     {
-        private DateTime _initiationDateTime = DateTime.Now;
+        private DateTime nameChangerDateTime = DateTime.Now;
 
         public Program()
         {
@@ -38,6 +39,10 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
+            DateTime startDateTime = DateTime.Now;
+            List<IMyWarhead> warheads = new List<IMyWarhead>();
+            GridTerminalSystem.GetBlocksOfType(warheads);
+
             if (!string.IsNullOrEmpty(argument))
             {
                 _arg = argument;
@@ -50,11 +55,15 @@ namespace IngameScript
 
             if (string.IsNullOrEmpty(_arg))
             {
-                Echo("Argument needed! Please copy the block name and paste it into the argument slot. CASE SENSITIVE");
+                string o = "";
+
+                if (warheads.Count > 0)
+                    o += $"WARNING: SHIP CONTAINS {warheads.Count} WARHEADS! TIMER WILL BE SET TO 30 SEC\n";
+
+                o += "Argument needed! Please copy the block name and paste it into the argument slot. CASE SENSITIVE";
+                Echo(o);
                 return;
             }
-
-            string o = "";
 
             List<IMyTerminalBlock> doors = GetAllDoors();
             List<IMyProgrammableBlock> programmableBlocks = new List<IMyProgrammableBlock>();
@@ -63,9 +72,20 @@ namespace IngameScript
             List<IMyLargeInteriorTurret> interiorTurrets = new List<IMyLargeInteriorTurret>();
             List<IMyPistonBase> pistonBases = new List<IMyPistonBase>();
             List<IMyShipMergeBlock> mergeBlocks = new List<IMyShipMergeBlock>();
-            //List<IMyJumpDrive> jumpDrive = new List<>
+            List<IMyJumpDrive> jumpDrive = new List<IMyJumpDrive>();
             List<IMyAirVent> airVents = new List<IMyAirVent>();
             List<IMyGasTank> gasTanks = new List<IMyGasTank>();
+            List<IMyMedicalRoom> medicalRooms = new List<IMyMedicalRoom>();
+            List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
+            List<IMySolarPanel> solarPanels = new List<IMySolarPanel>();
+            List<IMyThrust> thrusts = new List<IMyThrust>();
+            List<IMyGasGenerator> gasGenerators = new List<IMyGasGenerator>();
+            List<IMyTimerBlock> timerBlocks = new List<IMyTimerBlock>();
+            List<IMyGyro> gyros = new List<IMyGyro>();
+            List<IMyGravityGenerator> gravityGenerators = new List<IMyGravityGenerator>();
+            List<IMyGravityGeneratorSphere> gravityGeneratorSpheres = new List<IMyGravityGeneratorSphere>();
+            List<IMyRadioAntenna> antennae = new List<IMyRadioAntenna>();
+            List<IMyTextPanel> textPanels = new List<IMyTextPanel>();
 
             GridTerminalSystem.GetBlocksOfType(largeGatlingTurrets);
             GridTerminalSystem.GetBlocksOfType(missileTurrets);
@@ -74,12 +94,24 @@ namespace IngameScript
             GridTerminalSystem.GetBlocksOfType(programmableBlocks);
             GridTerminalSystem.GetBlocksOfType(pistonBases);
             GridTerminalSystem.GetBlocksOfType(mergeBlocks);
+            GridTerminalSystem.GetBlocksOfType(jumpDrive);
             GridTerminalSystem.GetBlocksOfType(airVents);
             GridTerminalSystem.GetBlocksOfType(gasTanks);
+            GridTerminalSystem.GetBlocksOfType(medicalRooms);
+            GridTerminalSystem.GetBlocksOfType(batteryBlocks);
+            GridTerminalSystem.GetBlocksOfType(solarPanels);
+            GridTerminalSystem.GetBlocksOfType(thrusts);
+            GridTerminalSystem.GetBlocksOfType(gasGenerators);
+            GridTerminalSystem.GetBlocksOfType(timerBlocks);
+            GridTerminalSystem.GetBlocksOfType(gyros);
+            GridTerminalSystem.GetBlocksOfType(gravityGenerators);
+            GridTerminalSystem.GetBlocksOfType(gravityGeneratorSpheres);
+            GridTerminalSystem.GetBlocksOfType(antennae);
+            GridTerminalSystem.GetBlocksOfType(textPanels);
 
             foreach (IMyProgrammableBlock block in programmableBlocks)
             {
-                if (block.CustomName != _arg)
+                if (block.CustomName != _arg.Trim())
                 {
                     block.ApplyAction("OnOff_Off");
                 }
@@ -143,12 +175,125 @@ namespace IngameScript
                 myPistonBase.MinLimit = 0;
             }
 
+            foreach (IMyJumpDrive block in jumpDrive)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
             foreach (IMyAirVent vent in airVents)
             {
                 vent.Depressurize = true;
 
-                //int oxygenTanks = 
+                foreach (IMyGasTank tank in gasTanks)
+                {
+                    tank.AutoRefillBottles = false;
+                    tank.Stockpile = true;
+                }
             }
+
+            foreach (IMyMedicalRoom block in medicalRooms)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyThrust thrust in thrusts)
+            {
+                thrust.ApplyAction("OnOff_Off");
+            }
+            
+            foreach (IMyGasGenerator block in gasGenerators)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyTimerBlock block in timerBlocks)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyWarhead warhead in warheads)
+            {
+                if (!warhead.IsCountingDown)
+                {
+                    if (warhead.CustomData != "ARMED FUCKERS!!!")
+                    {
+                        warhead.DetonationTime = 30;
+                        warhead.CustomData = "ARMED FUCKERS!!!";
+                    }
+
+                    warhead.StartCountdown();
+                }
+            }
+
+            foreach (IMyGyro block in gyros)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMyGravityGenerator generator in gravityGenerators)
+            {
+                generator.FieldSize = new Vector3(150,150,150);
+                generator.Enabled = false;
+                generator.GravityAcceleration = 10;
+            }
+            
+            foreach (IMyGravityGeneratorSphere generator in gravityGeneratorSpheres)
+            {
+                generator.Radius = 400;
+                generator.Enabled = false;
+                generator.GravityAcceleration = 10;
+            }
+
+            if ((DateTime.Now - nameChangerDateTime).TotalSeconds > 1)
+            {
+                nameChangerDateTime = DateTime.Now;
+
+                List<IMyTerminalBlock> blocks = new List<IMyTerminalBlock>();
+
+                GridTerminalSystem.GetBlocksOfType(blocks);
+
+                foreach (IMyTerminalBlock block in blocks)
+                {
+                    block.ShowInInventory = false;
+                    block.ShowInTerminal = false;
+                    block.ShowInToolbarConfig = false;
+
+                    if (block is IMyCargoContainer)
+                        block.ShowOnHUD = true;
+                    else
+                        block.ShowOnHUD = false;
+
+                    if (block.CustomName != _arg)
+                    {
+                        block.CustomName = $"{_arg} ";
+                    }
+                }
+            }
+
+            foreach (IMyRadioAntenna antenna in antennae)
+            {
+                antenna.Enabled = true;
+                antenna.EnableBroadcasting = true;
+                antenna.Radius = Single.MaxValue;
+            }
+
+            foreach (IMyTextPanel panel in textPanels)
+            {
+                panel.WritePublicTitle("HACKED");
+                panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                panel.WriteText("HACKED");
+            }
+
+            // REMOVE ALL POWER GENS //
+            /*foreach (IMyBatteryBlock block in batteryBlocks)
+            {
+                block.ApplyAction("OnOff_Off");
+            }
+
+            foreach (IMySolarPanel block in solarPanels)
+            {
+                block.ApplyAction("OnOff_Off");                
+            }*/
 
             // APPLY AT LAST //
             foreach (IMyShipMergeBlock block in mergeBlocks)
@@ -156,7 +301,7 @@ namespace IngameScript
                 block.ApplyAction("OnOff_Off");
             }
 
-            Echo(o);
+            Echo($"Script used {(DateTime.Now - startDateTime):g} to run");
         }
 
         private List<IMyTerminalBlock> GetAllDoors()
