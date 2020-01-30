@@ -3,15 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceEngineerScripts", "SpaceEngineerScripts\SpaceEngineerScripts.csproj", "{E2E29512-4C47-48E6-864E-100DB0BE885B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddSuffixToEverything", "AddSuffixToEverything\AddSuffixToEverything.csproj", "{8AABF2C8-3359-46DB-95EB-7A2C6A596511}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airlock", "Airlock\Airlock.csproj", "{64786D95-9908-4CE0-ABFF-475AA78C752A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryInfo", "BatteryInfo\BatteryInfo.csproj", "{21C05C50-E00D-4014-A60A-3D907A31D2B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoStatus", "CargoStatus\CargoStatus.csproj", "{D31421DC-7B6B-4D60-8D5F-617ED215F078}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E2E29512-4C47-48E6-864E-100DB0BE885B}.Debug|x64.ActiveCfg = Debug|x64
-		{E2E29512-4C47-48E6-864E-100DB0BE885B}.Debug|x64.Build.0 = Debug|x64
+		{8AABF2C8-3359-46DB-95EB-7A2C6A596511}.Debug|x64.ActiveCfg = Debug|x64
+		{8AABF2C8-3359-46DB-95EB-7A2C6A596511}.Debug|x64.Build.0 = Debug|x64
+		{64786D95-9908-4CE0-ABFF-475AA78C752A}.Debug|x64.ActiveCfg = Debug|x64
+		{64786D95-9908-4CE0-ABFF-475AA78C752A}.Debug|x64.Build.0 = Debug|x64
+		{21C05C50-E00D-4014-A60A-3D907A31D2B0}.Debug|x64.ActiveCfg = Debug|x64
+		{21C05C50-E00D-4014-A60A-3D907A31D2B0}.Debug|x64.Build.0 = Debug|x64
+		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.ActiveCfg = Debug|x64
+		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
