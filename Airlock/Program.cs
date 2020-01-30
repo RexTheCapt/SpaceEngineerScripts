@@ -45,6 +45,7 @@ namespace IngameScript
         private List<IMyAirVent> airVents = new List<IMyAirVent>();
         private List<IMyDoor> doors = new List<IMyDoor>();
         private List<IMyInteriorLight> lights = new List<IMyInteriorLight>();
+        private List<IMyTextPanel> textPanels = new List<IMyTextPanel>();
 
         public Program()
         {
@@ -94,11 +95,29 @@ namespace IngameScript
             {
                 VentData vd = new VentData(airVent);
 
-                Echo(lights.Count.ToString());
-
                 foreach (IMyInteriorLight light in lights)
                 {
+                    //Echo($"T:[Airlock-{vd.Group}");
+                    if (light.CustomName.Contains($"[Airlock-{vd.Group}"))
+                    {
+                        if (light.Intensity > 4)
+                        {
+                            vd.Direction = VentData.Direct.Inn;
+                            Echo("Inn");
+                            vd.Save();
+                        }
+                        else if (light.Intensity < 4)
+                        {
+                            vd.Direction = VentData.Direct.Out;
+                            Echo("Out");
+                            vd.Save();
+                        }
 
+                        light.Intensity = 4;
+                        light.Falloff = 1;
+
+                        Echo($"Works, {light.Intensity.ToString()}");
+                    }
                 }
 
                 if (vd.IsAirlock)
@@ -163,10 +182,16 @@ namespace IngameScript
                                             }
                                     }
 
-                                    if (airVent.GetOxygenLevel() > 0.05)
+                                    if (airVent.GetOxygenLevel() == 1)
+                                    {
                                         SetLights(vd.Group, AirlockStatus.Inn);
-                                    else if (!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.05)
+                                        SetLcd(vd.Group, AirlockStatus.Inn, airVent);
+                                    }
+                                    else if (!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95)
+                                    {
                                         SetLights(vd.Group, AirlockStatus.Working);
+                                        SetLcd(vd.Group, AirlockStatus.Working, airVent);
+                                    }
                                     break;
                                 case VentData.Direct.Out:
                                     if (door.CustomName.Contains("Inn"))
@@ -211,12 +236,49 @@ namespace IngameScript
                                     }
 
                                     if(airVent.GetOxygenLevel() > 0)
+                                    {
                                         SetLights(vd.Group, AirlockStatus.Working);
+                                        SetLcd(vd.Group, AirlockStatus.Working,airVent);
+                                    }
                                     else if (airVent.GetOxygenLevel() == 0 || !airVent.CanPressurize)
+                                    {
                                         SetLights(vd.Group, AirlockStatus.Out);
+                                        SetLcd(vd.Group, AirlockStatus.Out,airVent);
+                                    }
                                     break;
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        private void SetLcd(string group, AirlockStatus airlockStatus, IMyAirVent airVent)
+        {
+            foreach (IMyTextPanel panel in textPanels)
+            {
+                if (panel.CustomName.Contains($"[Airlock-{group}"))
+                {
+                    switch (airlockStatus)
+                    {
+                        case AirlockStatus.Working:
+                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                            panel.FontColor = Color.Orange;
+                            panel.Alignment = TextAlignment.CENTER;
+                            panel.WriteText($"Cycling...\n{(airVent.GetOxygenLevel() * 100):000.00}%");
+                            break;
+                        case AirlockStatus.Inn:
+                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                            panel.FontColor = Color.Green;
+                            panel.Alignment = TextAlignment.CENTER;
+                            panel.WriteText($"Breathing\n{(airVent.GetOxygenLevel() * 100):000.00}%");
+                            break;
+                        case AirlockStatus.Out:
+                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                            panel.FontColor = Color.Green;
+                            panel.Alignment = TextAlignment.CENTER;
+                            panel.WriteText($"Choking\n{(airVent.GetOxygenLevel() * 100):000.00}%");
+                            break;
                     }
                 }
             }
@@ -324,6 +386,7 @@ namespace IngameScript
             GridTerminalSystem.GetBlocksOfType(airVents);
             GridTerminalSystem.GetBlocksOfType(doors);
             GridTerminalSystem.GetBlocksOfType(lights);
+            GridTerminalSystem.GetBlocksOfType(textPanels);
         }
     }
 
@@ -331,7 +394,8 @@ namespace IngameScript
     {
         public string Name => AirVent.CustomName;
         public bool IsAirlock => Name.Contains("[Airlock");
-        public string Group => Name.Split('-')[1].Replace("]", "");
+        public string Group => Name.Substring(Name.LastIndexOf('-') + 1).Split(' ')[0].Replace("]", "");
+                            // Corner Light - Double 4 [Airlock-Main Out]
 
         public IMyAirVent AirVent;
 
