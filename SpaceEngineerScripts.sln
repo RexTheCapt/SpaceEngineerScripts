@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryInfo", "BatteryInfo\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoStatus", "CargoStatus\CargoStatus.csproj", "{D31421DC-7B6B-4D60-8D5F-617ED215F078}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipReconnectLaserAntenna", "ShipReconnectLaserAntenna\ShipReconnectLaserAntenna.csproj", "{931E1112-AF56-4213-8CAE-8DAA512D0295}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -24,6 +26,8 @@ Global
 		{21C05C50-E00D-4014-A60A-3D907A31D2B0}.Debug|x64.Build.0 = Debug|x64
 		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.ActiveCfg = Debug|x64
 		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.Build.0 = Debug|x64
+		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.ActiveCfg = Debug|x64
+		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
