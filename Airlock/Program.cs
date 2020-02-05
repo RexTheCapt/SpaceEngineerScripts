@@ -62,6 +62,7 @@ namespace IngameScript
 
             GetAllBlocks();
 
+            // Reset Airlock
             foreach (IMyAirVent vent in airVents)
             {
                 VentData vd = new VentData(vent);
@@ -69,8 +70,27 @@ namespace IngameScript
                 if (vd.IsAirlock)
                 {
                     vd.Reset();
-                    Echo($"Reset {vd.Name}");
+
+                    vd.AirVent.Enabled = true;
+
+                    foreach (IMyInteriorLight light in lights)
+                    {
+                        if (light.CustomName.Contains($"[Airlock-{vd.Group}"))
+                        {
+                            light.Intensity = 4;
+                        }
+                    }
                 }
+            }
+
+            // Reset Airlock2
+            List<IMyDoor> doors2 = new List<IMyDoor>();
+            GridTerminalSystem.GetBlocksOfType(doors2, x=>x.CustomName.Contains("[Airlock2-"));
+
+            foreach (IMyDoor door in doors2)
+            {
+                door.Enabled = true;
+                door.CloseDoor();
             }
 
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
@@ -90,7 +110,7 @@ namespace IngameScript
 
             GetAllBlocks();
 
-            // Drain or fill airlock
+            // Drain or fill Airlock rooms
             foreach (IMyAirVent airVent in airVents)
             {
                 VentData vd = new VentData(airVent);
@@ -124,41 +144,79 @@ namespace IngameScript
                 {
                     foreach (IMyDoor door in doors)
                     {
-                        if (door.CustomName.Contains($"[Airlock-{vd.Group}"))
+                        if (vd.AirVent.Enabled)
                         {
-                            switch (vd.Direction)
+                            if (door.CustomName.Contains($"[Airlock-{vd.Group}"))
                             {
-                                case VentData.Direct.Inn:
-                                    airVent.Depressurize = false;
+                                switch (vd.Direction)
+                                {
+                                    case VentData.Direct.Inn:
+                                        airVent.Depressurize = false;
 
-                                    if (door.CustomName.Contains("Inn"))
-                                    {
-                                        if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
+                                        if (door.CustomName.Contains("Inn"))
                                         {
-                                            if(door.OpenRatio != 0)
+                                            if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
                                             {
-                                                door.Enabled = true;
-                                                door.CloseDoor();
+                                                if(door.OpenRatio != 0)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.CloseDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
                                             }
-                                            else
-                                            {
-                                                door.Enabled = false;
-                                            }
+                                            else if (airVent.GetOxygenLevel() > 0.95)
+                                                if (door.OpenRatio != 1)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.OpenDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
                                         }
-                                        else if (airVent.GetOxygenLevel() > 0.95)
-                                            if (door.OpenRatio != 1)
+                                        else if (door.CustomName.Contains("Out"))
+                                        {
+                                            if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
                                             {
-                                                door.Enabled = true;
-                                                door.OpenDoor();
+                                                if (door.OpenRatio != 0)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.CloseDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
                                             }
-                                            else
-                                            {
-                                                door.Enabled = false;
-                                            }
-                                    }
-                                    else if (door.CustomName.Contains("Out"))
-                                    {
-                                        if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
+                                            else if (airVent.GetOxygenLevel() > 0.95)
+                                                if (door.OpenRatio != 0)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.OpenDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
+                                        }
+
+                                        if (airVent.GetOxygenLevel() == 1)
+                                        {
+                                            SetLights(vd.Group, AirlockStatus.Inn);
+                                            SetLcd(vd.Group, AirlockStatus.Inn, airVent);
+                                        }
+                                        else if (!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95)
+                                        {
+                                            SetLights(vd.Group, AirlockStatus.Working);
+                                            SetLcd(vd.Group, AirlockStatus.Working, airVent);
+                                        }
+                                        break;
+                                    case VentData.Direct.Out:
+                                        if (door.CustomName.Contains("Inn"))
                                         {
                                             if (door.OpenRatio != 0)
                                             {
@@ -168,85 +226,91 @@ namespace IngameScript
                                             else
                                             {
                                                 door.Enabled = false;
+                                                airVent.Depressurize = true;
                                             }
                                         }
-                                        else if (airVent.GetOxygenLevel() > 0.95)
-                                            if (door.OpenRatio != 0)
+                                        else if (door.CustomName.Contains("Out"))
+                                        {
+                                            if (airVent.GetOxygenLevel() > 0.05)
                                             {
-                                                door.Enabled = true;
-                                                door.OpenDoor();
+                                                if (door.OpenRatio != 0)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.CloseDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
                                             }
-                                            else
+                                            else if (!airVent.CanPressurize || airVent.GetOxygenLevel() == 0)
                                             {
-                                                door.Enabled = false;
+                                                if (door.OpenRatio != 1)
+                                                {
+                                                    door.Enabled = true;
+                                                    door.OpenDoor();
+                                                }
+                                                else
+                                                {
+                                                    door.Enabled = false;
+                                                }
                                             }
-                                    }
+                                        }
 
-                                    if (airVent.GetOxygenLevel() == 1)
-                                    {
-                                        SetLights(vd.Group, AirlockStatus.Inn);
-                                        SetLcd(vd.Group, AirlockStatus.Inn, airVent);
-                                    }
-                                    else if (!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95)
-                                    {
-                                        SetLights(vd.Group, AirlockStatus.Working);
-                                        SetLcd(vd.Group, AirlockStatus.Working, airVent);
-                                    }
-                                    break;
-                                case VentData.Direct.Out:
-                                    if (door.CustomName.Contains("Inn"))
-                                    {
-                                        if (door.OpenRatio != 0)
+                                        if(airVent.GetOxygenLevel() > 0)
                                         {
-                                            door.Enabled = true;
-                                            door.CloseDoor();
+                                            SetLights(vd.Group, AirlockStatus.Working);
+                                            SetLcd(vd.Group, AirlockStatus.Working,airVent);
                                         }
-                                        else
+                                        else if (airVent.GetOxygenLevel() == 0 || !airVent.CanPressurize)
                                         {
-                                            door.Enabled = false;
-                                            airVent.Depressurize = true;
+                                            SetLights(vd.Group, AirlockStatus.Out);
+                                            SetLcd(vd.Group, AirlockStatus.Out,airVent);
                                         }
-                                    }
-                                    else if (door.CustomName.Contains("Out"))
-                                    {
-                                        if (airVent.GetOxygenLevel() > 0.05)
-                                        {
-                                            if (door.OpenRatio != 0)
-                                            {
-                                                door.Enabled = true;
-                                                door.CloseDoor();
-                                            }
-                                            else
-                                            {
-                                                door.Enabled = false;
-                                            }
-                                        }
-                                        else if (!airVent.CanPressurize || airVent.GetOxygenLevel() == 0)
-                                        {
-                                            if (door.OpenRatio != 1)
-                                            {
-                                                door.Enabled = true;
-                                                door.OpenDoor();
-                                            }
-                                            else
-                                            {
-                                                door.Enabled = false;
-                                            }
-                                        }
-                                    }
-
-                                    if(airVent.GetOxygenLevel() > 0)
-                                    {
-                                        SetLights(vd.Group, AirlockStatus.Working);
-                                        SetLcd(vd.Group, AirlockStatus.Working,airVent);
-                                    }
-                                    else if (airVent.GetOxygenLevel() == 0 || !airVent.CanPressurize)
-                                    {
-                                        SetLights(vd.Group, AirlockStatus.Out);
-                                        SetLcd(vd.Group, AirlockStatus.Out,airVent);
-                                    }
-                                    break;
+                                        break;
+                                }
                             }
+                        }
+                        else if (!vd.AirVent.Enabled)
+                        {
+                            if (door.CustomName.Contains($"[Airlock-{vd.Group}"))
+                                door.Enabled = true;
+
+                            SetLights(vd.Group, AirlockStatus.Override);
+                            SetLcd(vd.Group, AirlockStatus.Override, vd.AirVent);
+                        }
+                    }
+                }
+            }
+
+            // Control for Airlock2
+            List<IMyDoor> doors2 = new List<IMyDoor>();
+            GridTerminalSystem.GetBlocksOfType(doors2, x => x.CustomName.Contains("[Airlock2-"));
+
+            foreach (IMyDoor door in doors2)
+            {
+                string name = door.CustomName;
+                string group = name.Substring(name.LastIndexOf('-') + 1).Replace("]", "");
+                
+                List<IMyDoor> currentDoors = new List<IMyDoor>();
+                GridTerminalSystem.GetBlocksOfType(currentDoors, x=>x.CustomName.Contains($"[Airlock2-{group}]"));
+
+                if (currentDoors.Count == 2)
+                {
+                    bool doorOpen = false;
+
+                    foreach (IMyDoor currentDoor in currentDoors)
+                    {
+                        if (currentDoor.OpenRatio != 0)
+                            doorOpen = true;
+
+                        if (currentDoor.OpenRatio == 0 && doorOpen)
+                        {
+                            door.Enabled = false;
+                        }
+                        else
+                        {
+                            door.Enabled = true;
                         }
                     }
                 }
@@ -278,6 +342,12 @@ namespace IngameScript
                             panel.FontColor = Color.Green;
                             panel.Alignment = TextAlignment.CENTER;
                             panel.WriteText($"Choking\n{(airVent.GetOxygenLevel() * 100):000.00}%");
+                            break;
+                        case AirlockStatus.Override:
+                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                            panel.FontColor = Color.Violet;
+                            panel.Alignment = TextAlignment.CENTER;
+                            panel.WriteText($"Override Active\n{(airVent.GetOxygenLevel() * 100):000.00}%");
                             break;
                     }
                 }
@@ -360,6 +430,14 @@ namespace IngameScript
                         light.BlinkLength = 0;
                     }
                     break;
+                case AirlockStatus.Override:
+                    foreach (IMyInteriorLight light in allLights)
+                    {
+                        light.Color = Color.Violet;
+                        light.BlinkIntervalSeconds = 2;
+                        light.BlinkLength = 50;
+                    }
+                    break;
             }
         }
 
@@ -368,7 +446,8 @@ namespace IngameScript
             Inn,
             Out,
             Working,
-            Error
+            Error,
+            Override
         }
 
         public void Save()

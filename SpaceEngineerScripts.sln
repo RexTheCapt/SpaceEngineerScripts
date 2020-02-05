@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoStatus", "CargoStatus\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipReconnectLaserAntenna", "ShipReconnectLaserAntenna\ShipReconnectLaserAntenna.csproj", "{931E1112-AF56-4213-8CAE-8DAA512D0295}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusMain", "CerberusMain\CerberusMain.csproj", "{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -28,6 +32,10 @@ Global
 		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.Build.0 = Debug|x64
 		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.ActiveCfg = Debug|x64
 		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.Build.0 = Debug|x64
+		{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}.Debug|x64.ActiveCfg = Debug|x64
+		{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}.Debug|x64.Build.0 = Debug|x64
+		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.ActiveCfg = Debug|x64
+		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
