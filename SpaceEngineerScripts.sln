@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusMain", "CerberusMain\CerberusMain.csproj", "{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Braking", "Braking\Braking.csproj", "{EB91FBBD-4705-4164-881D-D0FB07375E78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cerberus", "Cerberus", "{0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusV2", "CerberusV2\CerberusV2.csproj", "{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -36,9 +42,17 @@ Global
 		{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}.Debug|x64.Build.0 = Debug|x64
 		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.ActiveCfg = Debug|x64
 		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.Build.0 = Debug|x64
+		{EB91FBBD-4705-4164-881D-D0FB07375E78}.Debug|x64.ActiveCfg = Debug|x64
+		{EB91FBBD-4705-4164-881D-D0FB07375E78}.Debug|x64.Build.0 = Debug|x64
+		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}.Debug|x64.ActiveCfg = Debug|x64
+		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
+		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {698EB799-9CBC-4235-803F-07BBB08C544B}

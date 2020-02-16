@@ -25,15 +25,17 @@ namespace IngameScript
         private IMyTextPanel textPanelJumpDriveDetailedInfo = null;
         private IMyTextPanel textPanelIngotDisplay = null;
         private IMyTextPanel textPanelOreDisplay = null;
+        private IMyTextPanel textPanelHydrogenDisplay = null;
 
-        private int IngotMaxNickel,
-            IngotMaxPlatinum,
-            IngotMaxSilicon,
-            IngotMaxCobalt,
-            IngotMaxIron,
-            IngotMaxStone,
-            IngotMaxSilver,
-            IngotMaxGold;
+        private static class Ingot
+        {
+            public static int MaxNickel, MaxPlatinum, MaxSilicon, MaxCobalt, MaxIron, MaxStone, MaxSilver, MaxGold;
+        }
+
+        private static class Ore
+        {
+            public static int MaxNickel, MaxPlatinum, MaxSilicon, MaxCobalt, MaxIron, MaxStone, MaxSilver, MaxGold;
+        }
 
         public Program()
         {
@@ -55,6 +57,9 @@ namespace IngameScript
                     $"// Same as ingots but with ores\n" +
                     $"textPanelOreDisplay=ENTER NAME\n" +
                     $"\n" +
+                    $"// Hydrogen display\n" +
+                    $"textPanelHydrogenDisplay=ENTER NAME\n" +
+                    $"\n" +
                     $"// Ingot settings\n" +
                     $"Ingot:Nickel=1000\n" +
                     $"Ingot:Platinum=1000\n" +
@@ -63,7 +68,17 @@ namespace IngameScript
                     $"Ingot:Iron=1000\n" +
                     $"Ingot:Stone=1000\n" +
                     $"Ingot:Silver=1000\n" +
-                    $"Ingot:Gold=1000\n";
+                    $"Ingot:Gold=1000\n" +
+                    $"\n" +
+                    $"// Ore settings\n" +
+                    $"Ore:Nickel=1000\n" +
+                    $"Ore:Platinum=1000\n" +
+                    $"Ore:Silicon=1000\n" +
+                    $"Ore:Cobalt=1000\n" +
+                    $"Ore:Iron=1000\n" +
+                    $"Ore:Stone=1000\n" +
+                    $"Ore:Silver=1000\n" +
+                    $"Ore:Gold=1000\n";
             }
             else
             {
@@ -78,105 +93,198 @@ namespace IngameScript
 
                     string[] value = s.Split('=');
 
+                    #region Set variables
+#pragma warning disable CS1717 // Assignment made to same variable
                     switch (value[0])
                     {
+                        #region Ingot
                         case "Ingot:Nickel":
-                            if (int.TryParse(value[1], out IngotMaxNickel))
+                            if (int.TryParse(value[1], out Ingot.MaxNickel))
                             {
-                                //IngotMaxNickel = val;
+                                Ingot.MaxNickel = Ingot.MaxNickel;
                             }
                             else
                             {
-                                IngotMaxNickel = 1000;
+                                Ingot.MaxNickel = 1000;
                             }
                             break;
                         case "Ingot:Platinum":
-                            if (int.TryParse(value[1], out IngotMaxPlatinum))
+                            if (int.TryParse(value[1], out Ingot.MaxPlatinum))
                             {
-                                //IngotMaxPlatinum = val;
+                                Ingot.MaxPlatinum = Ingot.MaxPlatinum;
                             }
                             else
                             {
-                                IngotMaxPlatinum = 1000;
+                                Ingot.MaxPlatinum = 1000;
                             }
                             break;
                         case "Ingot:Silicon":
-                            if (int.TryParse(value[1], out IngotMaxSilicon))
+                            if (int.TryParse(value[1], out Ingot.MaxSilicon))
                             {
-                                //IngotMaxSilicon = val;
+                                Ingot.MaxSilicon = Ingot.MaxSilicon;
                             }
                             else
                             {
-                                IngotMaxSilicon = 1000;
+                                Ingot.MaxSilicon = 1000;
                             }
                             break;
                         case "Ingot:Cobalt":
-                            if (int.TryParse(value[1], out IngotMaxCobalt))
+                            if (int.TryParse(value[1], out Ingot.MaxCobalt))
                             {
-                                //IngotMaxCobalt = val;
+                                Ingot.MaxCobalt = Ingot.MaxCobalt;
                             }
                             else
                             {
-                                IngotMaxCobalt = 1000;
+                                Ingot.MaxCobalt = 1000;
                             }
                             break;
                         case "Ingot:Iron":
-                            if (int.TryParse(value[1], out IngotMaxIron))
+                            if (int.TryParse(value[1], out Ingot.MaxIron))
                             {
-                                //IngotMaxIron = val;
+                                Ingot.MaxIron = Ingot.MaxIron;
                             }
                             else
                             {
-                                IngotMaxIron = 1000;
+                                Ingot.MaxIron = 1000;
                             }
                             break;
                         case "Ingot:Stone":
-                            if (int.TryParse(value[1], out IngotMaxStone))
+                            if (int.TryParse(value[1], out Ingot.MaxStone))
                             {
-                                //IngotMaxStone = val;
+                                Ingot.MaxStone = Ingot.MaxStone;
                             }
                             else
                             {
-                                IngotMaxStone = 1000;
+                                Ingot.MaxStone = 1000;
                             }
                             break;
                         case "Ingot:Silver":
-                            if (int.TryParse(value[1], out IngotMaxSilver))
+                            if (int.TryParse(value[1], out Ingot.MaxSilver))
                             {
-                                //IngotMaxSilver = val;
+                                Ingot.MaxSilver = Ingot.MaxSilver;
                             }
                             else
                             {
-                                IngotMaxSilver = 1000;
+                                Ingot.MaxSilver = 1000;
                             }
                             break;
                         case "Ingot:Gold":
-                            if (int.TryParse(value[1], out IngotMaxNickel))
+                            if (int.TryParse(value[1], out Ingot.MaxGold))
                             {
-                                //IngotMaxNickel = val;
+                                Ingot.MaxGold = Ingot.MaxGold;
                             }
                             else
                             {
-                                IngotMaxNickel = 1000;
+                                Ingot.MaxGold = 1000;
                             }
                             break;
+                        #endregion
+                        #region Ores
+                        case "Ore:Nickel":
+                            if (int.TryParse(value[1], out Ore.MaxNickel))
+                            {
+                                Ore.MaxNickel = Ore.MaxNickel;
+                            }
+                            else
+                            {
+                                Ore.MaxNickel = 1000;
+                            }
+                            break;
+                        case "Ore:Platinum":
+                            if (int.TryParse(value[1], out Ore.MaxPlatinum))
+                            {
+                                Ore.MaxPlatinum = Ore.MaxPlatinum;
+                            }
+                            else
+                            {
+                                Ore.MaxPlatinum = 1000;
+                            }
+                            break;
+                        case "Ore:Silicon":
+                            if (int.TryParse(value[1], out Ore.MaxSilicon))
+                            {
+                                Ore.MaxSilicon = Ore.MaxSilicon;
+                            }
+                            else
+                            {
+                                Ore.MaxSilicon = 1000;
+                            }
+                            break;
+                        case "Ore:Cobalt":
+                            if (int.TryParse(value[1], out Ore.MaxCobalt))
+                            {
+                                Ore.MaxCobalt = Ore.MaxCobalt;
+                            }
+                            else
+                            {
+                                Ore.MaxCobalt = 1000;
+                            }
+                            break;
+                        case "Ore:Iron":
+                            if (int.TryParse(value[1], out Ore.MaxIron))
+                            {
+                                Ore.MaxIron = Ore.MaxIron;
+                            }
+                            else
+                            {
+                                Ore.MaxIron = 1000;
+                            }
+                            break;
+                        case "Ore:Stone":
+                            if (int.TryParse(value[1], out Ore.MaxStone))
+                            {
+                                Ore.MaxStone = Ore.MaxStone;
+                            }
+                            else
+                            {
+                                Ore.MaxStone = 1000;
+                            }
+                            break;
+                        case "Ore:Silver":
+                            if (int.TryParse(value[1], out Ore.MaxSilver))
+                            {
+                                Ore.MaxSilver = Ore.MaxSilver;
+                            }
+                            else
+                            {
+                                Ore.MaxSilver = 1000;
+                            }
+                            break;
+                        case "Ore:Gold":
+                            if (int.TryParse(value[1], out Ore.MaxGold))
+                            {
+                                Ore.MaxGold = Ore.MaxGold;
+                            }
+                            else
+                            {
+                                Ore.MaxGold = 1000;
+                            }
+                            break;
+                        #endregion
+                        #region displays
                         case "CockpitDriveChargeStatusTextPanel":
-                            CockpitDriveChargeStatusTextPanel = (IMyTextPanel) GridTerminalSystem.GetBlockWithName(value[1]);
+                            CockpitDriveChargeStatusTextPanel = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(value[1]);
                             break;
                         case "textPanelJumpDriveDetailedInfo":
-                            textPanelJumpDriveDetailedInfo = (IMyTextPanel) GridTerminalSystem.GetBlockWithName(value[1]);
+                            textPanelJumpDriveDetailedInfo = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(value[1]);
                             break;
                         case "textPanelIngotDisplay":
-                            textPanelIngotDisplay = (IMyTextPanel) GridTerminalSystem.GetBlockWithName(value[1]);
+                            textPanelIngotDisplay = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(value[1]);
                             break;
                         case "textPanelOreDisplay":
-                            textPanelOreDisplay = (IMyTextPanel) GridTerminalSystem.GetBlockWithName(value[1]);
+                            textPanelOreDisplay = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(value[1]);
                             break;
+                        case "textPanelHydrogenDisplay":
+                            textPanelOreDisplay = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(value[1]);
+                            break;
+                        #endregion
                         default:
                             Echo("Config did not match : \n" +
                                  $"\"{value[0]}\"");
                             break;
                     }
+#pragma warning restore CS1717 // Assignment made to same variable
+                    #endregion
                 }
             }
         }
@@ -198,6 +306,8 @@ namespace IngameScript
                 Echo(textPanelIngotDisplay.CustomName);
             if (textPanelOreDisplay != null)
                 Echo(textPanelOreDisplay.CustomName);
+            if (textPanelHydrogenDisplay != null)
+                Echo(textPanelHydrogenDisplay.CustomName);
 
             if (CockpitDriveChargeStatusTextPanel != null)
             {
@@ -245,8 +355,6 @@ namespace IngameScript
                 List<IMyCargoContainer> cargoContainers = new List<IMyCargoContainer>();
                 GridTerminalSystem.GetBlocksOfType(cargoContainers, x=>x.IsSameConstructAs(Me));
 
-                bool append = false;
-
                     List<ItemInfo> itemInfos = new List<ItemInfo>();
                 foreach (IMyCargoContainer container in cargoContainers)
                 {
@@ -276,32 +384,32 @@ namespace IngameScript
                 string output = "   Ingots\n";
                 foreach (ItemInfo info in itemInfos)
                 {
-                    output += $"{info.SubtypeId}\n";
+                    output += $"{info.SubtypeId} : {info.Amount.ToIntSafe()}\n";
                     switch (info.SubtypeId)
                     {
                         case "Platinum":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxPlatinum)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxPlatinum)}\n";
                             break;
                         case "Nickel":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxNickel)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxNickel)}\n";
                             break;
                         case "Silicon":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxSilicon)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxSilicon)}\n";
                             break;
                         case "Cobalt":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxCobalt)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxCobalt)}\n";
                             break;
                         case "Iron":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxIron)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxIron)}\n";
                             break;
                         case "Stone":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxStone)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxStone)}\n";
                             break;
                         case "Silver":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxSilver)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxSilver)}\n";
                             break;
                         case "Gold":
-                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, IngotMaxGold)}\n";
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ingot.MaxGold)}\n";
                             break;
                         default:
                             output += $"{WriteProgressBar('=', ' ', info.Amount, 24, 1000)}\n";
@@ -311,6 +419,112 @@ namespace IngameScript
 
                 textPanelIngotDisplay.WriteText(output);
             }
+
+            if (textPanelOreDisplay != null)
+            {
+                Echo("Ores");
+
+                List<IMyCargoContainer> cargoContainers = new List<IMyCargoContainer>();
+                GridTerminalSystem.GetBlocksOfType(cargoContainers, x => x.IsSameConstructAs(Me));
+
+                List<ItemInfo> itemInfos = new List<ItemInfo>();
+                foreach (IMyCargoContainer container in cargoContainers)
+                {
+                    IMyInventory inventory = container.GetInventory();
+                    List<MyInventoryItem> items = new List<MyInventoryItem>();
+                    inventory.GetItems(items, x => x.Type.TypeId == "MyObjectBuilder_Ore");
+
+                    foreach (MyInventoryItem item in items)
+                    {
+                        if (itemInfos.FindAll(x => x.SubtypeId == item.Type.SubtypeId).Count == 0)
+                        {
+                            itemInfos.Add(new ItemInfo(item));
+                        }
+                        else
+                        {
+                            foreach (ItemInfo info in itemInfos)
+                            {
+                                if (info.SubtypeId == item.Type.SubtypeId)
+                                {
+                                    info.Amount += info.Amount;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                string output = "   Ores\n";
+                foreach (ItemInfo info in itemInfos)
+                {
+                    output += $"{info.SubtypeId} : {info.Amount.ToIntSafe()}\n";
+                    switch (info.SubtypeId)
+                    {
+                        case "Platinum":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxPlatinum)}\n";
+                            break;
+                        case "Nickel":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxNickel)}\n";
+                            break;
+                        case "Silicon":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxSilicon)}\n";
+                            break;
+                        case "Cobalt":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxCobalt)}\n";
+                            break;
+                        case "Iron":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxIron)}\n";
+                            break;
+                        case "Stone":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxStone)}\n";
+                            break;
+                        case "Silver":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxSilver)}\n";
+                            break;
+                        case "Gold":
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, Ore.MaxGold)}\n";
+                            break;
+                        default:
+                            output += $"{WriteProgressBar('=', ' ', info.Amount, 24, 1000)}\n";
+                            break;
+                    }
+                }
+
+                textPanelOreDisplay.WriteText(output);
+            }
+
+            if (textPanelHydrogenDisplay != null)
+            {
+                List<IMyGasTank> gasTanks = new List<IMyGasTank>();
+                GridTerminalSystem.GetBlocksOfType(gasTanks, x=>x.CustomName.Contains("Hydrogen Tank"));
+
+                double filledRatio = 0;
+
+                foreach (IMyGasTank tank in gasTanks)
+                {
+                    filledRatio += tank.FilledRatio;
+                }
+
+                textPanelHydrogenDisplay.WriteText(
+                    $"Hydrogen:\n{WriteProgressBar('|', '\'', (int)(filledRatio * 100), 92, 100 * gasTanks.Count)}");
+            }
+
+            //IMyTextPanel powerUse = (IMyTextPanel) GridTerminalSystem.GetBlockWithName("Screen_Diagnostic_444_hv");
+
+            //if (powerUse != null)
+            //{
+            //    List<IMyTerminalBlock> blocks = new List<IMyTerminalBlock>();
+            //    GridTerminalSystem.GetBlocksOfType(blocks);
+
+            //    string output = "";
+
+            //    foreach (IMyTerminalBlock block in blocks)
+            //    {
+            //        if (block.IsFunctional)
+            //        {
+            //            block.
+            //        }
+            //    }
+            //}
         }
 
         private string WriteProgressBar(char filled, char empty, MyFixedPoint current, int length, MyFixedPoint max)
