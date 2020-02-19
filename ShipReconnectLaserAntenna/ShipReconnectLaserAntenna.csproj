@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{931E1112-AF56-4213-8CAE-8DAA512D0295}</ProjectGuid>
+    <ProjectGuid>{CBD42B75-9507-46AA-800C-6BF8797349A4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
     <AssemblyName>ShipReconnectLaserAntenna</AssemblyName>

@@ -353,18 +353,18 @@ namespace IngameScript
             if (textPanelIngotDisplay != null)
             {
                 List<IMyCargoContainer> cargoContainers = new List<IMyCargoContainer>();
-                GridTerminalSystem.GetBlocksOfType(cargoContainers, x=>x.IsSameConstructAs(Me));
+                GridTerminalSystem.GetBlocksOfType(cargoContainers, x => x.IsSameConstructAs(Me));
 
-                    List<ItemInfo> itemInfos = new List<ItemInfo>();
+                List<ItemInfo> itemInfos = new List<ItemInfo>();
                 foreach (IMyCargoContainer container in cargoContainers)
                 {
                     IMyInventory inventory = container.GetInventory();
                     List<MyInventoryItem> items = new List<MyInventoryItem>();
-                    inventory.GetItems(items, x=>x.Type.TypeId == "MyObjectBuilder_Ingot");
+                    inventory.GetItems(items, x => x.Type.TypeId == "MyObjectBuilder_Ingot");
 
                     foreach (MyInventoryItem item in items)
                     {
-                        if(itemInfos.FindAll(x=>x.SubtypeId == item.Type.SubtypeId).Count == 0)
+                        if (itemInfos.FindAll(x => x.SubtypeId == item.Type.SubtypeId).Count == 0)
                         {
                             itemInfos.Add(new ItemInfo(item));
                         }
@@ -495,7 +495,7 @@ namespace IngameScript
             if (textPanelHydrogenDisplay != null)
             {
                 List<IMyGasTank> gasTanks = new List<IMyGasTank>();
-                GridTerminalSystem.GetBlocksOfType(gasTanks, x=>x.CustomName.Contains("Hydrogen Tank"));
+                GridTerminalSystem.GetBlocksOfType(gasTanks, x => x.CustomName.Contains("Hydrogen Tank"));
 
                 double filledRatio = 0;
 

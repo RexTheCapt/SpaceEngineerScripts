@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}</ProjectGuid>
+    <ProjectGuid>{957BD663-BD7B-48AF-A12A-2445E1CFDA74}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
     <AssemblyName>Test</AssemblyName>

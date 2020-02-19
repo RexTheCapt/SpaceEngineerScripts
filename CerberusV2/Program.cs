@@ -1,4 +1,6 @@
-﻿using Sandbox.Game.EntityComponents;
+﻿// CerberusV2
+
+using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -23,9 +25,15 @@ namespace IngameScript
     {
         // Config
         private string OreDisplayName = "LCD Panel 10 [LCD] [Cerberus]";
-        private String IngotDisplayName = "LCD Panel 9 [LCD] [Cerberus]";
+        private string IngotDisplayName = "LCD Panel 9 [LCD] [Cerberus]";
         private string MainCockpitName = "Flight Seat Bridge Captain [MAIN] [Cerberus]";
         private string JumpDriveDisplay = "Corner LCD Top 12 [LCD] [Cerberus]";
+        private int AirlockTimer = 3;
+        private string[] AirlockDoorNames = new[]
+        {
+            "Left Exterior Sliding Door [Cerberus];Left Exterior Sliding Door 2 [Cerberus]",
+            "Right Exterior Sliding Door [Cerberus];Right Exterior Sliding Door 2 [Cerberus]"
+        };
         // Config end
 
         private readonly List<Ore> ores = new List<Ore>()
@@ -41,7 +49,7 @@ namespace IngameScript
             new Ore("Silicon"),
             new Ore("Silver"),
             new Ore("Uranium")
-        }.OrderBy(x=>x.SubtypeId).ToList();
+        }.OrderBy(x => x.SubtypeId).ToList();
 
         private readonly List<Ingot> ingots = new List<Ingot>()
         {
@@ -55,14 +63,25 @@ namespace IngameScript
             new Ingot("Silver"),
             new Ingot("Stone"),
             new Ingot("Uranium")
-        }.OrderBy(x=>x.SubtypeId).ToList();
+        }.OrderBy(x => x.SubtypeId).ToList();
 
         private IMyCockpit mainCockpit;
+
+        private List<Airlock> airlocks = new List<Airlock>();
 
         public Program()
         {
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             mainCockpit = (IMyCockpit)GridTerminalSystem.GetBlockWithName(MainCockpitName);
+
+            foreach (string name in AirlockDoorNames)
+            {
+                string[] names = name.Split(';');
+                Airlock airlock = new Airlock(names[0], names[1], AirlockTimer);
+                airlock.D1 = GridTerminalSystem.GetBlockWithName(names[0]) as IMyDoor;
+                airlock.D2 = GridTerminalSystem.GetBlockWithName(names[1]) as IMyDoor;
+                airlocks.Add(airlock);
+            }
         }
 
         public void Main(string argument, UpdateType updateSource)
@@ -79,7 +98,7 @@ namespace IngameScript
                 IMyTerminalBlock controlBlock;
                 List<IMyTerminalBlock> gridBlocks = new List<IMyTerminalBlock>();
                 List<IMyThrust> reverseIonThrusters = new List<IMyThrust>();
-                
+
                 float brakingTime;
                 float brakingDistance;
                 float maxAcceleration;
@@ -108,7 +127,7 @@ namespace IngameScript
                 totalMass = (controlBlock as IMyShipController).CalculateShipMass().TotalMass;
                 maxAcceleration = reverseThrustersForce / totalMass;
                 currentSpeed = (controlBlock as IMyShipController).GetShipSpeed();
-                brakingTime = (float) currentSpeed / maxAcceleration;
+                brakingTime = (float)currentSpeed / maxAcceleration;
                 brakingDistance = (maxAcceleration * brakingTime * brakingTime) / 2;
 
                 foreach (IMyTerminalBlock _container in cargoContainers)
@@ -117,14 +136,14 @@ namespace IngameScript
                     currentCargoVolume += _container.GetInventory().CurrentVolume;
                 }
 
-                double cargoSpace = ((double) currentCargoVolume / (double) maxCargoVolume * 100);
+                double cargoSpace = ((double)currentCargoVolume / (double)maxCargoVolume * 100);
 
                 surface.WriteText($"Cargo Load: {Math.Round(cargoSpace, 2)}%\n" +
                                   $"Until stop: {Math.Round(brakingTime)} s. {Math.Round(brakingDistance)} m.");
             }
 
             List<IMyTerminalBlock> blocksWithInventory = new List<IMyTerminalBlock>();
-            GridTerminalSystem.GetBlocksOfType(blocksWithInventory, x=>x.HasInventory);
+            GridTerminalSystem.GetBlocksOfType(blocksWithInventory, x => x.HasInventory);
 
             foreach (IMyTerminalBlock block in blocksWithInventory)
             {
@@ -138,7 +157,7 @@ namespace IngameScript
                     {
                         case "MyObjectBuilder_Ore":
                             Ore ore = ores.Find(x => x.SubtypeId == item.Type.SubtypeId);
-                            if(ore != null)
+                            if (ore != null)
                                 ore.Amount += item.Amount;
                             else
                             {
@@ -160,11 +179,11 @@ namespace IngameScript
 
             IMyTextPanel oreDisplay = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(OreDisplayName);
             IMyTextPanel ingotDisplay = (IMyTextPanel)GridTerminalSystem.GetBlockWithName(IngotDisplayName);
-            
+
             if (oreDisplay != null)
             {
                 string output = "Ores :\n";
-                
+
                 foreach (Ore ore in ores)
                 {
                     output += $" {ore.SubtypeId} : {ore.Amount.ToIntSafe()}\n";
@@ -177,7 +196,7 @@ namespace IngameScript
             if (ingotDisplay != null)
             {
                 string output = "Ingots:\n";
-                
+
                 foreach (Ingot ingot in ingots)
                 {
                     output += $" {ingot.SubtypeId} : {ingot.Amount.ToIntSafe()}\n";
@@ -203,10 +222,65 @@ namespace IngameScript
                     {
                         text.FontColor = Color.Green;
                     }
-                    else if(currentStoredPower < 100)
+                    else if (currentStoredPower < 100)
                     {
                         text.FontColor = Color.Orange;
                     }
+                }
+            }
+
+            foreach (Airlock airlock in airlocks)
+            {
+                airlock.Check();
+            }
+        }
+
+        private class Airlock
+        {
+            public IMyDoor D1;
+            public IMyDoor D2;
+            private readonly int MaxSeconds;
+
+            public Airlock(string door1, string door2, int airlockTimer)
+            {
+                MaxSeconds = airlockTimer;
+            }
+
+            private DateTime d1DateTime = DateTime.MinValue;
+            private DateTime d2DateTime = DateTime.MinValue;
+
+            public void Check()
+            {
+                if (D1.OpenRatio != 0)
+                {
+                    D2.Enabled = false;
+
+                    if (d1DateTime == DateTime.MinValue)
+                        d1DateTime = DateTime.Now;
+
+                    if (d1DateTime.AddSeconds(MaxSeconds) < DateTime.Now)
+                        D1.CloseDoor();
+                }
+                else
+                {
+                    D2.Enabled = true;
+                    d1DateTime = DateTime.MinValue;
+                }
+
+                if (D2.OpenRatio != 0)
+                {
+                    D1.Enabled = false;
+
+                    if (d2DateTime == DateTime.MinValue)
+                        d2DateTime = DateTime.Now;
+
+                    if (d2DateTime.AddSeconds(MaxSeconds) < DateTime.Now)
+                        D2.CloseDoor();
+                }
+                else
+                {
+                    D1.Enabled = true;
+                    d2DateTime = DateTime.MinValue;
                 }
             }
         }

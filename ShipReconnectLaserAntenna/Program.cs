@@ -83,8 +83,8 @@ namespace IngameScript
             // The method itself is required, but the arguments above
             // can be removed if not needed.
 
-            IMyLaserAntenna antenna = (IMyLaserAntenna) GridTerminalSystem.GetBlockWithName("Main Laser Antenna");
-            IMyRemoteControl remoteControl = (IMyRemoteControl) GridTerminalSystem.GetBlockWithName("Main Remote Control");
+            IMyLaserAntenna antenna = (IMyLaserAntenna)GridTerminalSystem.GetBlockWithName("Main Laser Antenna");
+            IMyRemoteControl remoteControl = (IMyRemoteControl)GridTerminalSystem.GetBlockWithName("Main Remote Control");
 
             if (antenna != null && remoteControl != null)
             {
@@ -108,7 +108,7 @@ namespace IngameScript
                     remoteControl.SetAutoPilotEnabled(true);
                     regainedConnection = false;
                 }
-                else if(!regainedConnection)
+                else if (!regainedConnection)
                 {
                     remoteControl.SetAutoPilotEnabled(false);
                     regainedConnection = true;

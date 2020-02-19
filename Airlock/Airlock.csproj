@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{64786D95-9908-4CE0-ABFF-475AA78C752A}</ProjectGuid>
+    <ProjectGuid>{BC6F92DA-A463-4DB4-986B-B5A46DC31FA0}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
     <AssemblyName>Airlock</AssemblyName>

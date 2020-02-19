@@ -21,7 +21,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-//COPY FROM HERE
+        //COPY FROM HERE
 
         /*README
          * THIS SCRIPT FEATURES TWO FUNCTIONS:
@@ -126,13 +126,13 @@ namespace IngameScript
             }
 
             double cargoSpace =
-                ((double) currentCargoVolume / (double) maxCargoVolume * 100); //Percentage of used space
+                ((double)currentCargoVolume / (double)maxCargoVolume * 100); //Percentage of used space
 
             //BRAKING DISTANCE AND BRAKING TIME:
             totalMass = (controlBlock as IMyShipController).CalculateShipMass().TotalMass;
             currentSpeed = (controlBlock as IMyShipController).GetShipSpeed();
             maxAcceleration = reverseThrustersForce / totalMass;
-            brakingTime = (float) currentSpeed / maxAcceleration;
+            brakingTime = (float)currentSpeed / maxAcceleration;
             brakingDistance = (maxAcceleration * brakingTime * brakingTime) / 2;
 
             //INFO PANEL

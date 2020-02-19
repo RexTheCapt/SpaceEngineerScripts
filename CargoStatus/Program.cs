@@ -147,7 +147,7 @@ namespace IngameScript
                         output += "[Tool]";
                         break;
                     case "MyObjectBuilder_Component":
-                        output+="[Comp]";
+                        output += "[Comp]";
                         break;
                     case "MyObjectBuilder_Ore":
                         output += "[Ore]";

@@ -54,8 +54,6 @@ namespace IngameScript
             // It's recommended to set Runtime.UpdateFrequency 
             // here, which will allow your script to run itself without a 
             // timer block.
-
-            Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
         public void Save()
@@ -79,55 +77,6 @@ namespace IngameScript
             // 
             // The method itself is required, but the arguments above
             // can be removed if not needed.
-
-            List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
-            GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks);
-
-            float totalStoredPower = 0;
-            float maxStoredPower = 0;
-            float totalOutput = 0;
-            float totalInput = 0;
-
-            foreach (IMyBatteryBlock block in batteryBlocks)
-            {
-                totalStoredPower += block.CurrentStoredPower;
-                maxStoredPower += block.MaxStoredPower;
-                totalOutput += block.CurrentOutput;
-                totalInput += block.CurrentInput;
-            }
-
-            float hoursLeft = (maxStoredPower - totalStoredPower) / (totalInput - totalOutput);
-            float minLeft = (float) ((int) hoursLeft * 60) - (hoursLeft * 60);
-            float secLeft = (float) ((int) minLeft * 60) - (hoursLeft * 60);
-
-            List<IMyTextPanel> textPanels = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType(textPanels);
-
-            TimeSpan timeLeft = new TimeSpan((int)hoursLeft,(int) minLeft,(int)secLeft);
-
-            if (timeLeft.TotalSeconds < 0)
-                timeLeft = new TimeSpan(0 - timeLeft.Days, 0 - timeLeft.Hours, 0 - timeLeft.Minutes, 0 - timeLeft.Seconds, 0 - timeLeft.Milliseconds);
-
-            string outputText = $"Last update: {DateTime.Now}\n" +
-                                $"Total: {totalStoredPower} MWh\n" +
-                                $"Max: {maxStoredPower} MWh\n" +
-                                $"Batteries: {batteryBlocks.Count}\n" +
-                                $"Capacity: {((totalStoredPower / maxStoredPower) * 100):000.00}%\n" +
-                                $"Output: {totalOutput:#.000} MW\n" +
-                                $"Input: {totalInput:#.000} MW\n" +
-                                $"Change: {(totalInput - totalOutput):#.000} MW\n" +
-                                $"{(totalInput - totalOutput > 0 ? "Charged in:" : "Depleted in:")} {timeLeft:g}\n";
-
-            foreach (IMyTextPanel panel in textPanels)
-            {
-                if (panel.CustomName.Contains("[Battery Info]"))
-                {
-                    panel.ContentType = ContentType.TEXT_AND_IMAGE;
-                    panel.WriteText(outputText);
-                }
-            }
-
-            Echo(outputText);
         }
     }
 }

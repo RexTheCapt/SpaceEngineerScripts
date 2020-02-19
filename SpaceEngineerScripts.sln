@@ -3,56 +3,62 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddSuffixToEverything", "AddSuffixToEverything\AddSuffixToEverything.csproj", "{8AABF2C8-3359-46DB-95EB-7A2C6A596511}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airlock", "Airlock\Airlock.csproj", "{64786D95-9908-4CE0-ABFF-475AA78C752A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryInfo", "BatteryInfo\BatteryInfo.csproj", "{21C05C50-E00D-4014-A60A-3D907A31D2B0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoStatus", "CargoStatus\CargoStatus.csproj", "{D31421DC-7B6B-4D60-8D5F-617ED215F078}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipReconnectLaserAntenna", "ShipReconnectLaserAntenna\ShipReconnectLaserAntenna.csproj", "{931E1112-AF56-4213-8CAE-8DAA512D0295}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusMain", "CerberusMain\CerberusMain.csproj", "{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Braking", "Braking\Braking.csproj", "{EB91FBBD-4705-4164-881D-D0FB07375E78}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cerberus", "Cerberus", "{0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusV2", "CerberusV2\CerberusV2.csproj", "{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusV2", "CerberusV2\CerberusV2.csproj", "{B782627E-2191-4B7D-A6FA-66B81E2B70BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "From Workshop", "From Workshop", "{9EB0DFA3-51F8-4A28-AC19-00D5FD3DD32F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Braking", "Braking\Braking.csproj", "{EC962616-FE86-46CC-BE89-C98262F8ACE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipReconnectLaserAntenna", "ShipReconnectLaserAntenna\ShipReconnectLaserAntenna.csproj", "{CBD42B75-9507-46AA-800C-6BF8797349A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{957BD663-BD7B-48AF-A12A-2445E1CFDA74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airlock", "Airlock\Airlock.csproj", "{BC6F92DA-A463-4DB4-986B-B5A46DC31FA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddSuffixToEverything", "AddSuffixToEverything\AddSuffixToEverything.csproj", "{D4F8CE86-DA74-432A-878F-845834A59583}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoStatus", "CargoStatus\CargoStatus.csproj", "{D1E1BD59-A56E-4C4B-B03E-783F93FD9C50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusMain", "CerberusMain\CerberusMain.csproj", "{51182257-67CD-4F15-8B88-3FE59B0C1D1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryInfo", "BatteryInfo\BatteryInfo.csproj", "{783B9865-CD25-42D3-9119-C01E1C9679B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deprecated", "Deprecated", "{3BBAEF6A-1667-48E6-B063-B44273544356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AABF2C8-3359-46DB-95EB-7A2C6A596511}.Debug|x64.ActiveCfg = Debug|x64
-		{8AABF2C8-3359-46DB-95EB-7A2C6A596511}.Debug|x64.Build.0 = Debug|x64
-		{64786D95-9908-4CE0-ABFF-475AA78C752A}.Debug|x64.ActiveCfg = Debug|x64
-		{64786D95-9908-4CE0-ABFF-475AA78C752A}.Debug|x64.Build.0 = Debug|x64
-		{21C05C50-E00D-4014-A60A-3D907A31D2B0}.Debug|x64.ActiveCfg = Debug|x64
-		{21C05C50-E00D-4014-A60A-3D907A31D2B0}.Debug|x64.Build.0 = Debug|x64
-		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.ActiveCfg = Debug|x64
-		{D31421DC-7B6B-4D60-8D5F-617ED215F078}.Debug|x64.Build.0 = Debug|x64
-		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.ActiveCfg = Debug|x64
-		{931E1112-AF56-4213-8CAE-8DAA512D0295}.Debug|x64.Build.0 = Debug|x64
-		{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}.Debug|x64.ActiveCfg = Debug|x64
-		{BAB7D90A-07B0-49F9-8DD5-E65A70F62EE9}.Debug|x64.Build.0 = Debug|x64
-		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.ActiveCfg = Debug|x64
-		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A}.Debug|x64.Build.0 = Debug|x64
-		{EB91FBBD-4705-4164-881D-D0FB07375E78}.Debug|x64.ActiveCfg = Debug|x64
-		{EB91FBBD-4705-4164-881D-D0FB07375E78}.Debug|x64.Build.0 = Debug|x64
-		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}.Debug|x64.ActiveCfg = Debug|x64
-		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}.Debug|x64.Build.0 = Debug|x64
+		{B782627E-2191-4B7D-A6FA-66B81E2B70BD}.Debug|x64.ActiveCfg = Debug|x64
+		{B782627E-2191-4B7D-A6FA-66B81E2B70BD}.Debug|x64.Build.0 = Debug|x64
+		{EC962616-FE86-46CC-BE89-C98262F8ACE7}.Debug|x64.ActiveCfg = Debug|x64
+		{EC962616-FE86-46CC-BE89-C98262F8ACE7}.Debug|x64.Build.0 = Debug|x64
+		{CBD42B75-9507-46AA-800C-6BF8797349A4}.Debug|x64.ActiveCfg = Debug|x64
+		{CBD42B75-9507-46AA-800C-6BF8797349A4}.Debug|x64.Build.0 = Debug|x64
+		{957BD663-BD7B-48AF-A12A-2445E1CFDA74}.Debug|x64.ActiveCfg = Debug|x64
+		{957BD663-BD7B-48AF-A12A-2445E1CFDA74}.Debug|x64.Build.0 = Debug|x64
+		{BC6F92DA-A463-4DB4-986B-B5A46DC31FA0}.Debug|x64.ActiveCfg = Debug|x64
+		{BC6F92DA-A463-4DB4-986B-B5A46DC31FA0}.Debug|x64.Build.0 = Debug|x64
+		{D4F8CE86-DA74-432A-878F-845834A59583}.Debug|x64.ActiveCfg = Debug|x64
+		{D4F8CE86-DA74-432A-878F-845834A59583}.Debug|x64.Build.0 = Debug|x64
+		{D1E1BD59-A56E-4C4B-B03E-783F93FD9C50}.Debug|x64.ActiveCfg = Debug|x64
+		{D1E1BD59-A56E-4C4B-B03E-783F93FD9C50}.Debug|x64.Build.0 = Debug|x64
+		{51182257-67CD-4F15-8B88-3FE59B0C1D1B}.Debug|x64.ActiveCfg = Debug|x64
+		{51182257-67CD-4F15-8B88-3FE59B0C1D1B}.Debug|x64.Build.0 = Debug|x64
+		{783B9865-CD25-42D3-9119-C01E1C9679B5}.Debug|x64.ActiveCfg = Debug|x64
+		{783B9865-CD25-42D3-9119-C01E1C9679B5}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C3D5DEF7-AB8F-4EA1-8892-D3673AE63B4A} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
-		{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
+		{B782627E-2191-4B7D-A6FA-66B81E2B70BD} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
+		{EC962616-FE86-46CC-BE89-C98262F8ACE7} = {9EB0DFA3-51F8-4A28-AC19-00D5FD3DD32F}
+		{51182257-67CD-4F15-8B88-3FE59B0C1D1B} = {3BBAEF6A-1667-48E6-B063-B44273544356}
+		{3BBAEF6A-1667-48E6-B063-B44273544356} = {0F66CFA4-8A3B-4A50-8C8E-2BB7F710854D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {698EB799-9CBC-4235-803F-07BBB08C544B}

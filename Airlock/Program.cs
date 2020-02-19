@@ -41,11 +41,6 @@ namespace IngameScript
         // https://github.com/malware-dev/MDK-SE/wiki/Quick-Introduction-to-Space-Engineers-Ingame-Scripts
         //
         // to learn more about ingame scripts.
-        
-        private List<IMyAirVent> airVents = new List<IMyAirVent>();
-        private List<IMyDoor> doors = new List<IMyDoor>();
-        private List<IMyInteriorLight> lights = new List<IMyInteriorLight>();
-        private List<IMyTextPanel> textPanels = new List<IMyTextPanel>();
 
         public Program()
         {
@@ -60,40 +55,17 @@ namespace IngameScript
             // here, which will allow your script to run itself without a 
             // timer block.
 
-            GetAllBlocks();
+            Runtime.UpdateFrequency = UpdateFrequency.Update100;
+        }
 
-            // Reset Airlock
-            foreach (IMyAirVent vent in airVents)
-            {
-                VentData vd = new VentData(vent);
-
-                if (vd.IsAirlock)
-                {
-                    vd.Reset();
-
-                    vd.AirVent.Enabled = true;
-
-                    foreach (IMyInteriorLight light in lights)
-                    {
-                        if (light.CustomName.Contains($"[Airlock-{vd.Group}"))
-                        {
-                            light.Intensity = 4;
-                        }
-                    }
-                }
-            }
-
-            // Reset Airlock2
-            List<IMyDoor> doors2 = new List<IMyDoor>();
-            GridTerminalSystem.GetBlocksOfType(doors2, x=>x.CustomName.Contains("[Airlock2-"));
-
-            foreach (IMyDoor door in doors2)
-            {
-                door.Enabled = true;
-                door.CloseDoor();
-            }
-
-            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+        public void Save()
+        {
+            // Called when the program needs to save its state. Use
+            // this method to save your state to the Storage field
+            // or some other means. 
+            // 
+            // This method is optional and can be removed if not
+            // needed.
         }
 
         public void Main(string argument, UpdateType updateSource)
@@ -108,408 +80,54 @@ namespace IngameScript
             // The method itself is required, but the arguments above
             // can be removed if not needed.
 
-            GetAllBlocks();
+            List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
+            GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks);
 
-            // Drain or fill Airlock rooms
-            foreach (IMyAirVent airVent in airVents)
+            float totalStoredPower = 0;
+            float maxStoredPower = 0;
+            float totalOutput = 0;
+            float totalInput = 0;
+
+            foreach (IMyBatteryBlock block in batteryBlocks)
             {
-                VentData vd = new VentData(airVent);
-
-                foreach (IMyInteriorLight light in lights)
-                {
-                    //Echo($"T:[Airlock-{vd.Group}");
-                    if (light.CustomName.Contains($"[Airlock-{vd.Group}"))
-                    {
-                        if (light.Intensity > 4)
-                        {
-                            vd.Direction = VentData.Direct.Inn;
-                            Echo("Inn");
-                            vd.Save();
-                        }
-                        else if (light.Intensity < 4)
-                        {
-                            vd.Direction = VentData.Direct.Out;
-                            Echo("Out");
-                            vd.Save();
-                        }
-
-                        light.Intensity = 4;
-                        light.Falloff = 1;
-
-                        Echo($"Works, {light.Intensity.ToString()}");
-                    }
-                }
-
-                if (vd.IsAirlock)
-                {
-                    foreach (IMyDoor door in doors)
-                    {
-                        if (vd.AirVent.Enabled)
-                        {
-                            if (door.CustomName.Contains($"[Airlock-{vd.Group}"))
-                            {
-                                switch (vd.Direction)
-                                {
-                                    case VentData.Direct.Inn:
-                                        airVent.Depressurize = false;
-
-                                        if (door.CustomName.Contains("Inn"))
-                                        {
-                                            if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
-                                            {
-                                                if(door.OpenRatio != 0)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.CloseDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                            }
-                                            else if (airVent.GetOxygenLevel() > 0.95)
-                                                if (door.OpenRatio != 1)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.OpenDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                        }
-                                        else if (door.CustomName.Contains("Out"))
-                                        {
-                                            if ((!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95))
-                                            {
-                                                if (door.OpenRatio != 0)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.CloseDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                            }
-                                            else if (airVent.GetOxygenLevel() > 0.95)
-                                                if (door.OpenRatio != 0)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.OpenDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                        }
-
-                                        if (airVent.GetOxygenLevel() == 1)
-                                        {
-                                            SetLights(vd.Group, AirlockStatus.Inn);
-                                            SetLcd(vd.Group, AirlockStatus.Inn, airVent);
-                                        }
-                                        else if (!airVent.CanPressurize || airVent.GetOxygenLevel() < 0.95)
-                                        {
-                                            SetLights(vd.Group, AirlockStatus.Working);
-                                            SetLcd(vd.Group, AirlockStatus.Working, airVent);
-                                        }
-                                        break;
-                                    case VentData.Direct.Out:
-                                        if (door.CustomName.Contains("Inn"))
-                                        {
-                                            if (door.OpenRatio != 0)
-                                            {
-                                                door.Enabled = true;
-                                                door.CloseDoor();
-                                            }
-                                            else
-                                            {
-                                                door.Enabled = false;
-                                                airVent.Depressurize = true;
-                                            }
-                                        }
-                                        else if (door.CustomName.Contains("Out"))
-                                        {
-                                            if (airVent.GetOxygenLevel() > 0.05)
-                                            {
-                                                if (door.OpenRatio != 0)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.CloseDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                            }
-                                            else if (!airVent.CanPressurize || airVent.GetOxygenLevel() == 0)
-                                            {
-                                                if (door.OpenRatio != 1)
-                                                {
-                                                    door.Enabled = true;
-                                                    door.OpenDoor();
-                                                }
-                                                else
-                                                {
-                                                    door.Enabled = false;
-                                                }
-                                            }
-                                        }
-
-                                        if(airVent.GetOxygenLevel() > 0)
-                                        {
-                                            SetLights(vd.Group, AirlockStatus.Working);
-                                            SetLcd(vd.Group, AirlockStatus.Working,airVent);
-                                        }
-                                        else if (airVent.GetOxygenLevel() == 0 || !airVent.CanPressurize)
-                                        {
-                                            SetLights(vd.Group, AirlockStatus.Out);
-                                            SetLcd(vd.Group, AirlockStatus.Out,airVent);
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        else if (!vd.AirVent.Enabled)
-                        {
-                            if (door.CustomName.Contains($"[Airlock-{vd.Group}"))
-                                door.Enabled = true;
-
-                            SetLights(vd.Group, AirlockStatus.Override);
-                            SetLcd(vd.Group, AirlockStatus.Override, vd.AirVent);
-                        }
-                    }
-                }
+                totalStoredPower += block.CurrentStoredPower;
+                maxStoredPower += block.MaxStoredPower;
+                totalOutput += block.CurrentOutput;
+                totalInput += block.CurrentInput;
             }
 
-            // Control for Airlock2
-            List<IMyDoor> doors2 = new List<IMyDoor>();
-            GridTerminalSystem.GetBlocksOfType(doors2, x => x.CustomName.Contains("[Airlock2-"));
+            float hoursLeft = (maxStoredPower - totalStoredPower) / (totalInput - totalOutput);
+            float minLeft = (float)((int)hoursLeft * 60) - (hoursLeft * 60);
+            float secLeft = (float)((int)minLeft * 60) - (hoursLeft * 60);
 
-            foreach (IMyDoor door in doors2)
-            {
-                string name = door.CustomName;
-                string group = name.Substring(name.LastIndexOf('-') + 1).Replace("]", "");
-                
-                List<IMyDoor> currentDoors = new List<IMyDoor>();
-                GridTerminalSystem.GetBlocksOfType(currentDoors, x=>x.CustomName.Contains($"[Airlock2-{group}]"));
+            List<IMyTextPanel> textPanels = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType(textPanels);
 
-                if (currentDoors.Count == 2)
-                {
-                    bool doorOpen = false;
+            TimeSpan timeLeft = new TimeSpan((int)hoursLeft, (int)minLeft, (int)secLeft);
 
-                    foreach (IMyDoor currentDoor in currentDoors)
-                    {
-                        if (currentDoor.OpenRatio != 0)
-                            doorOpen = true;
+            if (timeLeft.TotalSeconds < 0)
+                timeLeft = new TimeSpan(0 - timeLeft.Days, 0 - timeLeft.Hours, 0 - timeLeft.Minutes, 0 - timeLeft.Seconds, 0 - timeLeft.Milliseconds);
 
-                        if (currentDoor.OpenRatio == 0 && doorOpen)
-                        {
-                            door.Enabled = false;
-                        }
-                        else
-                        {
-                            door.Enabled = true;
-                        }
-                    }
-                }
-            }
-        }
+            string outputText = $"Last update: {DateTime.Now}\n" +
+                                $"Total: {totalStoredPower} MWh\n" +
+                                $"Max: {maxStoredPower} MWh\n" +
+                                $"Batteries: {batteryBlocks.Count}\n" +
+                                $"Capacity: {((totalStoredPower / maxStoredPower) * 100):000.00}%\n" +
+                                $"Output: {totalOutput:#.000} MW\n" +
+                                $"Input: {totalInput:#.000} MW\n" +
+                                $"Change: {(totalInput - totalOutput):#.000} MW\n" +
+                                $"{(totalInput - totalOutput > 0 ? "Charged in:" : "Depleted in:")} {timeLeft:g}\n";
 
-        private void SetLcd(string group, AirlockStatus airlockStatus, IMyAirVent airVent)
-        {
             foreach (IMyTextPanel panel in textPanels)
             {
-                if (panel.CustomName.Contains($"[Airlock-{group}"))
+                if (panel.CustomName.Contains("[Battery Info]"))
                 {
-                    switch (airlockStatus)
-                    {
-                        case AirlockStatus.Working:
-                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
-                            panel.FontColor = Color.Orange;
-                            panel.Alignment = TextAlignment.CENTER;
-                            panel.WriteText($"Cycling...\n{(airVent.GetOxygenLevel() * 100):000.00}%");
-                            break;
-                        case AirlockStatus.Inn:
-                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
-                            panel.FontColor = Color.Green;
-                            panel.Alignment = TextAlignment.CENTER;
-                            panel.WriteText($"Breathing\n{(airVent.GetOxygenLevel() * 100):000.00}%");
-                            break;
-                        case AirlockStatus.Out:
-                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
-                            panel.FontColor = Color.Green;
-                            panel.Alignment = TextAlignment.CENTER;
-                            panel.WriteText($"Choking\n{(airVent.GetOxygenLevel() * 100):000.00}%");
-                            break;
-                        case AirlockStatus.Override:
-                            panel.ContentType = ContentType.TEXT_AND_IMAGE;
-                            panel.FontColor = Color.Violet;
-                            panel.Alignment = TextAlignment.CENTER;
-                            panel.WriteText($"Override Active\n{(airVent.GetOxygenLevel() * 100):000.00}%");
-                            break;
-                    }
-                }
-            }
-        }
-
-        private bool IsAllDoorsClosed(string group)
-        {
-            foreach (IMyDoor door in doors)
-            {
-                if (door.CustomName.Contains($"[Airlock-{group}"))
-                {
-                    if (door.OpenRatio != 0)
-                    {
-                        return false;
-                    }
+                    panel.ContentType = ContentType.TEXT_AND_IMAGE;
+                    panel.WriteText(outputText);
                 }
             }
 
-            return true;
-        }
-
-        private void SetLights(string group, AirlockStatus status)
-        {
-            List<IMyInteriorLight> innLights = new List<IMyInteriorLight>();
-            List<IMyInteriorLight> outLights = new List<IMyInteriorLight>();
-            List<IMyInteriorLight> allLights = new List<IMyInteriorLight>();
-
-            foreach (IMyInteriorLight light in lights)
-            {
-                if (light.CustomName.Contains($"[Airlock-{group}"))
-                {
-                    if(light.CustomName.Contains("Inn"))
-                        innLights.Add(light);
-                    else if(light.CustomName.Contains("Out"))
-                        outLights.Add(light);
-                }
-            }
-
-            allLights.AddRange(innLights);
-            allLights.AddRange(outLights);
-
-            switch (status)
-            {
-                case AirlockStatus.Inn:
-                    foreach (IMyInteriorLight light in innLights)
-                    {
-                        light.Color = Color.Green;
-                        light.BlinkIntervalSeconds = 0;
-                        light.BlinkLength = 0;
-                    }
-
-                    foreach (IMyInteriorLight light in outLights)
-                    {
-                        light.Color = Color.DarkRed;
-                        light.BlinkIntervalSeconds = 1;
-                        light.BlinkLength = 25;
-                    }
-                    break;
-                case AirlockStatus.Out:
-                    foreach (IMyInteriorLight light in outLights)
-                    {
-                        light.Color = Color.Green;
-                        light.BlinkIntervalSeconds = 0;
-                        light.BlinkLength = 0;
-                    }
-
-                    foreach (IMyInteriorLight light in innLights)
-                    {
-                        light.Color = Color.DarkRed;
-                        light.BlinkIntervalSeconds = 1;
-                        light.BlinkLength = 25;
-                    }
-                    break;
-                case AirlockStatus.Working:
-                    foreach (IMyInteriorLight light in allLights)
-                    {
-                        light.Color = Color.Orange;
-                        light.BlinkIntervalSeconds = 0;
-                        light.BlinkLength = 0;
-                    }
-                    break;
-                case AirlockStatus.Override:
-                    foreach (IMyInteriorLight light in allLights)
-                    {
-                        light.Color = Color.Violet;
-                        light.BlinkIntervalSeconds = 2;
-                        light.BlinkLength = 50;
-                    }
-                    break;
-            }
-        }
-
-        private enum AirlockStatus
-        {
-            Inn,
-            Out,
-            Working,
-            Error,
-            Override
-        }
-
-        public void Save()
-        {
-            // Called when the program needs to save its state. Use
-            // this method to save your state to the Storage field
-            // or some other means. 
-            // 
-            // This method is optional and can be removed if not
-            // needed.
-        }
-
-        private void GetAllBlocks()
-        {
-            GridTerminalSystem.GetBlocksOfType(airVents);
-            GridTerminalSystem.GetBlocksOfType(doors);
-            GridTerminalSystem.GetBlocksOfType(lights);
-            GridTerminalSystem.GetBlocksOfType(textPanels);
-        }
-    }
-
-    internal class VentData
-    {
-        public string Name => AirVent.CustomName;
-        public bool IsAirlock => Name.Contains("[Airlock");
-        public string Group => Name.Substring(Name.LastIndexOf('-') + 1).Split(' ')[0].Replace("]", "");
-                            // Corner Light - Double 4 [Airlock-Main Out]
-
-        public IMyAirVent AirVent;
-
-        public Direct Direction;
-
-        public VentData(IMyAirVent vent)
-        {
-            AirVent = vent;
-
-            string lines = vent.CustomData;
-
-            if (!string.IsNullOrEmpty(vent.CustomData))
-            {
-                Direction = lines.Split(':')[1] == "Inn" ? Direct.Inn : Direct.Out;
-            }
-            else
-            {
-                Reset();
-            }
-        }
-
-        public void Reset()
-        {
-            AirVent.CustomData = $"dir:Inn";
-        }
-
-        public void Save()
-        {
-            AirVent.CustomData = $"dir:{(Direction == Direct.Inn ? "Inn" : "Out")}";
-        }
-
-        public enum Direct
-        {
-            Inn,
-            Out
+            Echo(outputText);
         }
     }
 }

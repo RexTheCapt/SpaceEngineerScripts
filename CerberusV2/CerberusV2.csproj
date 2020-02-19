@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{16A5D392-D6C2-44EE-AC47-C8A67AF0B9FD}</ProjectGuid>
+    <ProjectGuid>{B782627E-2191-4B7D-A6FA-66B81E2B70BD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
     <AssemblyName>CerberusV2</AssemblyName>

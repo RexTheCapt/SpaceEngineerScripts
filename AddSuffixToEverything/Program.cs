@@ -84,7 +84,7 @@ namespace IngameScript
 
             for (int i = 0; i < blocks.Count; i++)
             {
-                if(!blocks[i].CustomName.Contains("[Cerberus]"))
+                if (!blocks[i].CustomName.Contains("[Cerberus]"))
                 {
                     Echo($"{blocks[i].CustomName}");
                     blocks[i].CustomName += $" [Cerberus]";
